@@ -8,6 +8,7 @@ steps:
     image: alpine/helm:3.16
     commands:
       - helm package .
+      - echo "Packaged Helm chart: $(ls *.tgz)"  # Debug output
   # Step 2: Attach the packaged Helm chart to the GitHub release
   - name: attach-release
     image: plugins/github-release
@@ -16,7 +17,8 @@ steps:
         from_secret: github_token
       files: "*.tgz"
     when:
-      event: tag
+      event:
+        - tag
 trigger:
   event:
     - tag
