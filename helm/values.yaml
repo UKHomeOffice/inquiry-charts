@@ -8,7 +8,7 @@ prod: false
 
 # -- URL for public section of site (main site)
 siteUrl: ''
-# -- URL for admin interface (wordpress admin)
+# -- URL for admin interface (Wordpress admin)
 adminSiteUrl: ''
 
 # -- name of secret holding RDS creds in the kube namespace
@@ -38,9 +38,6 @@ wordpress:
     pullPolicy: IfNotPresent
 
   podSecurityContext: {}
-
-  podSecurityContext:
-    runAsUser: 33
 
   # -- pod resource spec
   resources:
