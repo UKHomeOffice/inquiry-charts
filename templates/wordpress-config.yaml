@@ -6,5 +6,5 @@ data:
   DEV_DEPLOYMENT: "no"
   SITE_URL: https://{{ .Values.siteUrl }}
   ADMIN_SITE_URL: https://{{ .Values.adminSiteUrl }}
-  SITE_TITLE: {{ .Values.shortName | upper }}
+  SITE_TITLE: "{{ .Values.shortName | upper }}"
   ADMIN_DEPLOYMENT: "no"

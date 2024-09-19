@@ -7,12 +7,10 @@ metadata:
   name: {{ .Values.name }}
   {{- end }}
   labels:
-    # @Note: specify label cert-manager.io/solver to specify that the route53 dns01 solver should be used
     cert-manager.io/solver: http01
 spec:
   secretName: {{ required "provide a secret name for wordpress cert" .Values.wordpress.secretName }}
   issuerRef:
-    # use letsencrypt-staging while developing and testing your certificates
     name: {{ .Values.wordpress.certificate.issuerName | default "letsencrypt-prod" }}
     kind: ClusterIssuer
     group: cert-manager.io
