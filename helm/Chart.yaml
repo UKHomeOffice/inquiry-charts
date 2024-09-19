@@ -1,5 +1,5 @@
 apiVersion: v2
-name: Inquiry Site
+name: inquiry-site
 description: A Helm chart for wordpress deployments on ACP
 # A chart can be either an 'application' or a 'library' chart.
 #
