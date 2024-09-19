@@ -25,6 +25,10 @@ A Helm chart for wordpress deployments
 | admin.tolerations | list | `[]` |  |
 | admin.uptime | string | `"Mon-Sun 00:00-24:00 Europe/London"` | uptime annotation for deployment |
 | adminSiteUrl | string | `""` | URL for admin interface (Wordpress admin) |
+| hpa.enabled | bool | `false` |  |
+| hpa.maxReplicas | int | `5` |  |
+| hpa.minReplicas | int | `1` |  |
+| hpa.targetCPUUtilizationPercentage | int | `80` |  |
 | image.tag | string | `""` | image tag to use for all images (usually drone commit SHA) |
 | name | string | `""` | name for the application |
 | prod | bool | `false` | set `true` for production deployments |
