@@ -1,0 +1,31 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: ingress-network-policy-{{ .Values.shortName }}
+spec:
+  podSelector:
+    matchLabels:
+      role: wordpress
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              name: ingress-external
+      ports:
+        - protocol: TCP
+          port: 8081
+  egress:
+    - ports:
+        - port: 53
+          protocol: UDP
+        - port: 53
+          protocol: TCP
+        - port: 3306
+          protocol: TCP
+        - port: 443
+          protocol: TCP
+    - to:
+        - namespaceSelector: {}

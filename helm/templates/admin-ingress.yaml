@@ -1,0 +1,28 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Values.shortName }}-admin
+  annotations:
+    ingress.kubernetes.io/force-ssl-redirect: "true"
+    ingress.kubernetes.io/backend-protocol: "HTTP"
+    ingress.kubernetes.io/proxy-body-size: "8m"
+    kubernetes.io/ingress.class: "nginx-external"
+    {{- with .Values.admin.ingress.whitelistSourceRange }}
+    ingress.kubernetes.io/whitelist-source-range: {{ .| nindent 6}}
+    {{- end }}
+spec:
+  tls:
+    - hosts:
+        - {{ .Values.adminSiteUrl }}
+      secretName: {{ .Values.admin.secretName }}
+  rules:
+    - host: {{ .Values.adminSiteUrl }}
+      http:
+        paths:
+          - backend:
+              service:
+                name: {{ .Values.name }}-admin
+                port:
+                  number: 8080
+            path: /
+            pathType: ImplementationSpecific

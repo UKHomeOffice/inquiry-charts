@@ -1,0 +1,106 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.name }}-maintenance
+  labels:
+    project: {{ .Values.shortName }}
+    {{- with .Values.maintenance.labels }}
+    {{ toYaml . }}
+    {{- end }}
+  annotations:
+    downscaler/uptime: {{ .Values.maintenance.uptime }}
+spec:
+  replicas: {{ .Values.maintenance.replicaCount }}
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      {{- include "maintenanceSelectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "maintenanceSelectorLabels" . | nindent 8 }}
+        project: {{ .Values.shortName }}
+        sql-proxy-client: {{ .Values.shortName }}
+      {{- with .Values.maintenance.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      securityContext:
+        {{- toYaml .Values.maintenance.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Values.name }}-maintenance
+          image: "{{ required "No image specified. A valid image.repository is required!" .Values.maintenance.image.repository }}:{{ required "A valid image.tag is required!" .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.maintenance.image.pullPolicy }}
+          resources:
+            {{- toYaml .Values.maintenance.resources | nindent 12 }}
+          securityContext:
+            {{- toYaml .Values.maintenance.securityContext | nindent 12 }}
+          command:
+            - /usr/bin/nc
+            - -v
+            - -lk
+            - -p
+            - "$(WORDPRESS_DB_PORT)"
+            - -e
+            - /usr/bin/nc
+            - $(WORDPRESS_DB_HOST)
+            - "$(WORDPRESS_DB_PORT)"
+          env:
+            - name: WORDPRESS_DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.rdsSecretName }}
+                  key: username
+            - name: WORDPRESS_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.rdsSecretName }}
+                  key: password
+            - name: WORDPRESS_DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.rdsSecretName }}
+                  key: db_name
+            - name: WORDPRESS_DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.rdsSecretName }}
+                  key: endpoint
+            - name: WORDPRESS_DB_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.rdsSecretName }}
+                  key: port
+            - name: ILAB_AWS_S3_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.s3SecretName }}
+                  key: access_key_id
+            - name: ILAB_AWS_S3_ACCESS_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.s3SecretName }}
+                  key: secret_access_key
+            - name: ILAB_AWS_S3_BUCKET
+              value: {{ .Values.s3BucketName }}
+          volumeMounts:
+            - mountPath: "/data"
+              name: data-volume
+      volumes:
+        - name: data-volume
+          persistentVolumeClaim:
+            claimName: {{ .Values.name }}-maintenance-data-claim
+      {{- with .Values.maintenance.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.maintenance.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.maintenance.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

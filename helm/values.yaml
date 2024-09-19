@@ -1,0 +1,170 @@
+# -- name for the application
+name: ''
+# -- short name for the application
+shortName: ''
+
+# -- set `true` for production deployments
+prod: false
+
+# -- URL for public section of site (main site)
+siteUrl: ''
+# -- URL for admin interface (wordpress admin)
+adminSiteUrl: ''
+
+# -- name of secret holding RDS creds in the kube namespace
+rdsSecretName: ''
+# -- name of secret holding S3 creds in the kube namespace
+s3SecretName: ''
+# -- name of S3 bucket
+s3BucketName: ''
+
+image:
+  # -- image tag to use for all images (usually drone commit SHA)
+  tag: ''
+
+wordpress:
+  # -- replica count for deployment
+  replicaCount: 1
+
+  # -- name of secret containing tls certificate and key for cert manager
+  secretName: ''
+
+  # -- uptime annotation for deployment
+  uptime: Mon-Sun 00:00-24:00 Europe/London
+
+  image:
+    # -- repository for the image
+    repository: ''
+    pullPolicy: IfNotPresent
+
+  podSecurityContext: {}
+
+  podSecurityContext:
+    runAsUser: 33
+
+  # -- pod resource spec
+  resources:
+    limits:
+      cpu: 500m
+      memory: 2G
+    requests:
+      cpu: 500m
+      memory: 2G
+
+  # -- deployment labels
+  labels: {}
+
+  podAnnotations: {}
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
+  ingress:
+    # -- Allowed ssl ciphers
+    sslCipher: ''
+    # -- whitelisted CIDRS for ingress (no whitelist if unset)
+    whitelistSourceRange: ''
+
+  certificate:
+    # -- cert manager certificate issuer
+    issuerName: 'letsencrypt-prod'
+    # -- DNS names for certificate
+    dnsNames: []
+
+admin:
+  # -- replica count for deployment
+  replicaCount: 1
+
+  # -- name of secret containing tls certificate and key for cert manager
+  secretName: ''
+
+  # -- uptime annotation for deployment
+  uptime: Mon-Sun 00:00-24:00 Europe/London
+
+  image:
+    # -- repository for the image
+    repository: ''
+    pullPolicy: IfNotPresent
+
+  podSecurityContext:
+    runAsUser: 33
+
+  # -- pod resource spec
+  resources:
+    limits:
+      cpu: 500m
+      memory: 2G
+    requests:
+      cpu: 500m
+      memory: 2G
+
+  # -- deployment labels
+  labels: {}
+
+  podAnnotations: {}
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
+  ingress:
+    # -- Allowed ssl ciphers
+    sslCipher: ''
+    # -- whitelisted CIDRS for ingress (no whitelist if unset)
+    whiteListSourceRange: ''
+
+  certificate:
+    # -- cert manager certificate issuer
+    issuerName: 'letsencrypt-prod'
+    # -- DNS names for certificate
+    dnsNames: []
+
+maintenance:
+  # -- replica count for deployment
+  replicaCount: 1
+
+  # -- uptime annotation for deployment
+  uptime: Mon-Sun 00:00-00:00 Europe/London
+
+  # -- PVC storage class
+  storageClassName: gp2-encrypted-eu-west-2a
+  # -- PVC storage size
+  storage: 5Gi
+
+  image:
+    # -- repository for the image
+    repository: ''
+    pullPolicy: IfNotPresent
+
+  podSecurityContext:  
+    runAsUser: 1000
+    runAsGroup: 1000
+    fsGroup: 1000
+
+  securityContext:
+    runAsNonRoot: true
+
+  # -- pod resource spec
+  resources:
+    limits:
+      cpu: 400m
+      memory: 400Mi
+    requests:
+      cpu: 50m
+      memory: 200Mi
+
+  # -- deployment labels
+  labels: {}
+
+  podAnnotations: {}
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}

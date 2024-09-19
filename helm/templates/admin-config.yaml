@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.name }}-config-admin
+data:
+  DEV_DEPLOYMENT: "no"
+  SITE_URL: https://{{ .Values.adminSiteUrl }}
+  ADMIN_SITE_URL: https://{{ .Values.adminSiteUrl }}
+  SITE_TITLE: {{ .Values.shortName | upper }}
+  ADMIN_DEPLOYMENT: "yes"

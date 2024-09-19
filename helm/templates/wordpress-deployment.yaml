@@ -1,0 +1,103 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.name }}
+  labels: 
+    {{- with .Values.wordpress.labels }}
+    {{ toYaml . }}
+    {{- end }}
+  annotations:
+    downscaler/uptime: {{ .Values.wordpress.uptime }}
+spec:
+  replicas: {{ .Values.wordpress.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        role: wordpress
+        {{- include "selectorLabels" . | nindent 8 }}
+    spec:
+      securityContext:
+        {{- toYaml .Values.wordpress.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Values.shortName }}-wordpress
+          image: "{{ required "A valid image.repository is required!" .Values.wordpress.image.repository }}:{{ required "A valid image.tag is required!" .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.wordpress.image.pullPolicy }}
+          livenessProbe:
+             httpGet:
+               path: /
+               port: 8081
+             initialDelaySeconds: 90
+             periodSeconds: 20
+             timeoutSeconds: 10
+             failureThreshold: 4
+             successThreshold: 1
+          readinessProbe:
+             httpGet:
+               path: /
+               port: 8081
+             initialDelaySeconds: 90
+             periodSeconds: 30
+             timeoutSeconds: 10
+             failureThreshold: 4
+             successThreshold: 1
+          resources:
+            {{- toYaml .Values.wordpress.resources | nindent 12 }}
+          ports:
+            - containerPort: 8081
+          envFrom:
+            - configMapRef:
+                name: {{ .Values.name }}-config
+          env:
+            - name: WORDPRESS_DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.rdsSecretName }}
+                  key: username
+            - name: WORDPRESS_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.rdsSecretName }}
+                  key: password
+            - name: WORDPRESS_DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.rdsSecretName }}
+                  key: db_name
+            - name: WORDPRESS_DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.rdsSecretName }}
+                  key: endpoint
+            - name: WORDPRESS_DB_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.rdsSecretName }}
+                  key: port
+            - name: ILAB_AWS_S3_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.s3SecretName }}
+                  key: access_key_id
+            - name: ILAB_AWS_S3_ACCESS_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.s3SecretName }}
+                  key: secret_access_key
+            - name: ILAB_AWS_S3_BUCKET
+              value: {{ .Values.s3BucketName }}
+      {{- with .Values.wordpress.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.wordpress.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.wordpress.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
