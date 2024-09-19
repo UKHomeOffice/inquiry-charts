@@ -37,7 +37,8 @@ wordpress:
     repository: ''
     pullPolicy: IfNotPresent
 
-  podSecurityContext: {}
+  podSecurityContext:
+    runAsUser: 33
 
   # -- pod resource spec
   resources:
