@@ -1,0 +1,22 @@
+kind: pipeline
+type: docker
+name: package-helm-chart
+
+steps:
+  # Step 1: Package the Helm chart
+  - name: package-helm
+    image: alpine/helm:3.16
+    commands:
+      - helm package .
+  # Step 2: Attach the packaged Helm chart to the GitHub release
+  - name: attach-release
+    image: plugins/github-release
+    settings:
+      api_key:
+        from_secret: github_token
+      files: "*.tgz"
+    when:
+      event: tag
+trigger:
+  event:
+    - tag
