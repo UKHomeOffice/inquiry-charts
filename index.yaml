@@ -3,12 +3,12 @@ entries:
   inquiry-site:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2024-09-19T19:59:02.575363+01:00"
+    created: "2024-09-22T15:45:19.967344+01:00"
     description: A Helm chart for wordpress deployments
-    digest: 0e03fed1a213587e22acf0b71ac0cbbcc873158bbfbfbf34f89ee35392ee8178
+    digest: 8221e50da9e55577df0a232cc056d2c6e9e2fa883cc8f01b0c4afbd58b74934a
     name: inquiry-site
     type: application
     urls:
-    - https://raw.githubusercontent.com/UKHomeOffice/inquiry-charts/main/inquiry-site-1.0.0.tgz
+    - https://github.com/UKHomeOffice/inquiry-charts/releases/download/1.0.0/inquiry-site-1.0.0.tgz/inquiry-site-1.0.0.tgz
     version: 1.0.0
-generated: "2024-09-19T19:59:02.573884+01:00"
+generated: "2024-09-22T15:45:19.965836+01:00"
