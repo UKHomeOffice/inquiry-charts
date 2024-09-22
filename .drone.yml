@@ -8,16 +8,17 @@ steps:
     image: alpine/helm:3.16
     commands:
       - helm package .
+      - ls
   # Step 2: Attach the packaged Helm chart to the GitHub release
-  - name: attach-release
-    image: plugins/github-release
-    settings:
-      api_key:
-        from_secret: github_token
-      files: "*.tgz"
-    when:
-      event:
-        - tag
+#  - name: attach-release
+#    image: plugins/github-release
+#    settings:
+#      api_key:
+#        from_secret: github_token
+#      files: "*.tgz"
+#    when:
+#      event:
+#        - tag
 trigger:
   event:
     - tag
