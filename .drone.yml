@@ -1,5 +1,5 @@
 kind: pipeline
-type: docker
+type: kubernetes
 name: package-helm-chart
 platform:
   os: linux
