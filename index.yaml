@@ -9,6 +9,6 @@ entries:
     name: inquiry_chart
     type: application
     urls:
-    - https://github.com/UKHomeOffice/inquiry-charts/releases/download/1.0.0/inquiry-site-1.0.0.tgz/inquiry_chart-1.0.0.tgz
+    - https://github.com/UKHomeOffice/inquiry-charts/releases/download/1.0.0/inquiry_chart-1.0.0.tgz
     version: 1.0.0
 generated: "2024-09-23T14:01:15.383686+01:00"
