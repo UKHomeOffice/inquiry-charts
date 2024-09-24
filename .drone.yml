@@ -12,6 +12,7 @@ steps:
       - |
         sed -i "s/^version:.*/version: ${DRONE_TAG}/" Chart.yaml
         sed -i "s/^appVersion:.*/appVersion: ${DRONE_TAG}/" Chart.yaml
+      - cat Chart.yaml
     when:
       event:
         - tag
@@ -28,6 +29,7 @@ steps:
     image: alpine/helm:3.16
     commands:
       - helm repo index . --url https://github.com/UKHomeOffice/inquiry-charts/releases/download/$${DRONE_TAG}/
+      - cat index.yaml
     when:
       event:
         - tag
@@ -36,9 +38,12 @@ steps:
     image: alpine/git
     environment:
       GIT_COMMITTER_NAME: drone-ci
+      GITHUB_TOKEN:
+        from_secret: github_token
     commands:
       - git config user.name "drone-ci"
       - git config user.email "${DRONE_COMMIT_AUTHOR_EMAIL}"
+      - git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/UKHomeOffice/inquiry-charts.git
       - git add Chart.yaml index.yaml
       - git commit -m "Update Helm chart version to ${DRONE_TAG} and update index.yaml"
       - git push origin HEAD
