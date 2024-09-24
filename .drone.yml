@@ -9,9 +9,8 @@ steps:
   - name: update-chart-version
     image: alpine
     commands:
-      - TAG=$(echo ${DRONE_TAG#v})
-      - sh -c 'sed -i "s/^version:.*/version: ${TAG}/" Chart.yaml'
-      - sh -c 'sed -i "s/^appVersion:.*/appVersion: ${TAG}/" Chart.yaml'
+      - sh -c 'sed -i "s/^version:.*/version: $${DRONE_TAG}/" Chart.yaml'
+      - sh -c 'sed -i "s/^appVersion:.*/appVersion: $${DRONE_TAG}/" Chart.yaml'
     when:
       event:
         - tag
@@ -27,8 +26,7 @@ steps:
   - name: update-index
     image: alpine/helm:3.16
     commands:
-      - TAG=$(echo ${DRONE_TAG#v})
-      - helm repo index . --url https://github.com/UKHomeOffice/inquiry-charts/releases/download/$TAG/
+      - helm repo index . --url https://github.com/UKHomeOffice/inquiry-charts/releases/download/$${DRONE_TAG}/
     when:
       event:
         - tag
