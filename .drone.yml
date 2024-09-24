@@ -10,19 +10,28 @@ steps:
     image: alpine
     commands:
       - TAG=$(echo ${DRONE_TAG#v})
-      - sed -i "s/^version:.*/version: $TAG/" Chart.yaml
-      - sed -i "s/^appVersion:.*/appVersion: $TAG/" Chart.yaml
+      - sh -c 'sed -i "s/^version:.*/version: $TAG/" Chart.yaml'
+      - sh -c 'sed -i "s/^appVersion:.*/appVersion: $TAG/" Chart.yaml'
+    when:
+      event:
+        - tag
   # Step 2: Package the Helm chart
   - name: package-helm
     image: alpine/helm:3.16
     commands:
       - helm package .
+    when:
+      event:
+        - tag
   # Step 3: Update index.yaml with the new chart
   - name: update-index
     image: alpine/helm:3.16
     commands:
       - TAG=$(echo ${DRONE_TAG#v})
       - helm repo index . --url https://github.com/UKHomeOffice/inquiry-charts/releases/download/$TAG/
+    when:
+      event:
+        - tag
   # Step 4: Commit and push changes (Chart.yaml and index.yaml)
   - name: commit-changes
     image: alpine/git
@@ -34,6 +43,9 @@ steps:
       - git add Chart.yaml index.yaml
       - git commit -m "Update Helm chart version to ${DRONE_TAG} and update index.yaml"
       - git push origin HEAD
+    when:
+      event:
+        - tag
   # Step 5: Attach the packaged Helm chart to the GitHub release
   - name: attach-release
     image: plugins/github-release
