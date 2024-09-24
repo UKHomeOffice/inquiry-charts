@@ -35,17 +35,17 @@ steps:
         - tag
   # Step 4: Commit and push changes (Chart.yaml and index.yaml)
   - name: commit-changes
-    image: plugins/git
-    settings:
-      git_user_name: "drone-ci"
-      git_user_email: "drone-ci@no-reply.com"
-      commit_message: "Update Helm chart version to ${DRONE_TAG} and update index.yaml"
-      files:
-        - Chart.yaml
-        - index.yaml
+    image: alpine/git
     environment:
       GITHUB_TOKEN:
         from_secret: github_token
+    commands:
+      - git config user.name "drone-ci"
+      - git config user.email "drone-ci@no-reply.com"
+      - git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/UKHomeOffice/inquiry-charts.git
+      - git add Chart.yaml index.yaml
+      - git commit -m "Update Helm chart version to ${DRONE_TAG} and update index.yaml"
+      - git push origin HEAD
     when:
       event:
         - tag
