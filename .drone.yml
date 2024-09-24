@@ -40,8 +40,9 @@ steps:
       git_user_name: "drone-ci"
       git_user_email: "drone-ci@no-reply.com"
       commit_message: "Update Helm chart version to ${DRONE_TAG} and update index.yaml"
-      tags: true
-      force: true
+      files:
+        - Chart.yaml
+        - index.yaml
     environment:
       GITHUB_TOKEN:
         from_secret: github_token
