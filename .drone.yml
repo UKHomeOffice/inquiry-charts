@@ -20,6 +20,7 @@ steps:
     when:
       event:
         - tag
+  # Step 3: update index.yaml with the new chart version from the tag
 trigger:
   event:
     - tag
