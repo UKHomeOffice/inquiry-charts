@@ -122,6 +122,8 @@ admin:
     # -- DNS names for certificate
     dnsNames: []
 
+env: []
+
 hpa:
   enabled: false
   minReplicas: 1
