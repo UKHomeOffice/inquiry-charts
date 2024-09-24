@@ -10,8 +10,8 @@ steps:
     image: alpine
     commands:
       - TAG=$(echo ${DRONE_TAG#v})
-      - sh -c 'sed -i "s/^version:.*/version: $TAG/" Chart.yaml'
-      - sh -c 'sed -i "s/^appVersion:.*/appVersion: $TAG/" Chart.yaml'
+      - sh -c 'sed -i "s/^version:.*/version: ${TAG}/" Chart.yaml'
+      - sh -c 'sed -i "s/^appVersion:.*/appVersion: ${TAG}/" Chart.yaml'
     when:
       event:
         - tag
