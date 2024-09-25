@@ -129,3 +129,70 @@ hpa:
   minReplicas: 1
   maxReplicas: 5
   targetCPUUtilizationPercentage: 80
+
+static:
+  enabled: false
+  pvc:
+    staticfiles:
+      storageClassName: ''
+      storage: 5Gi
+    syncstatic:
+      storageClassName: ''
+      storage: 5Gi
+    labels: { }
+  cronjob:
+    # -- CronJob Schedule
+    uptime: '*/5 8-20 * * MON-FRI'
+    image:
+      # -- repository for the image
+      repository: ''
+      pullPolicy: IfNotPresent
+    podSecurityContext:
+      runAsUser: 33
+    # -- pod resource spec
+    resources:
+      limits:
+        cpu: 550m
+        memory: 550Mi
+      requests:
+        cpu: 500m
+        memory: 500Mi
+    # -- CronJob labels
+    labels: { }
+  nginx:
+    # -- replica count for deployment
+    replicaCount: 1
+    # -- name of secret containing tls certificate and key for cert manager
+    secretName: ''
+    # -- uptime annotation for deployment
+    uptime: Mon-Sun 00:00-24:00 Europe/London
+    image:
+      # -- repository for the image
+      repository: ''
+      pullPolicy: IfNotPresent
+    podSecurityContext:
+      runAsUser: 33
+    # -- pod resource spec
+    resources:
+      limits:
+        cpu: 200m
+        memory: 300Mi
+      requests:
+        cpu: 200m
+        memory: 300Mi
+    # -- deployment labels
+    labels: { }
+    podAnnotations: { }
+    nodeSelector: { }
+    tolerations: [ ]
+    affinity: { }
+    ingress:
+      # -- Allowed ssl ciphers
+      sslCipher: ''
+      # -- whitelisted CIDRS for ingress (no whitelist if unset)
+      whitelistSourceRange: ''
+    certificate:
+      # -- cert manager certificate issuer
+      issuerName: 'letsencrypt-prod'
+      # -- DNS names for certificate
+      dnsNames: [ ]

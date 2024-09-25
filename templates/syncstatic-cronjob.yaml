@@ -1,0 +1,43 @@
+{{- if .Values.static.enabled }}
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: {{ .Values.name }}-staticsync
+  labels:
+  {{- with .Values.static.cronjob.labels }}
+  {{ toYaml . }}
+  {{- end }}
+spec:
+  schedule: "{{ .Values.static.cronjob.uptime }}"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    metadata:
+      labels:
+        name: {{ .Values.name }}-staticsync
+    spec:
+      template:
+        spec:
+          securityContext:
+            {{- toYaml .Values.static.cronjob.podSecurityContext | nindent 12 }}
+          containers:
+          - name: {{ .Values.name }}-staticsync
+            image: "{{ required "A valid image.repository is required!" .Values.static.cronjob.image.repository }}:{{ required "A valid image.tag is required!" .Values.image.tag }}"
+            imagePullPolicy: {{ .Values.static.cronjob.image.pullPolicy }}
+            resources:
+              {{- toYaml .Values.static.cronjob.resources | nindent 14 }}
+            volumeMounts:
+              - name: static-sync
+                mountPath: "/tmp/static"
+              - name: static-files
+                mountPath: "/var/www/html"
+          volumes:
+            - name: static-sync
+              persistentVolumeClaim:
+                claimName: {{ .Values.name }}-syncstatic-data-claim
+            - name: static-files
+              persistentVolumeClaim:
+                claimName: {{ .Values.name }}-staticfiles-data-claim
+          restartPolicy: OnFailure
+{{- end }}

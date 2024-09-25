@@ -1,4 +1,4 @@
-{{- if ne .Values.static.enabled true }}
+{{- if .Values.static.enabled }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -6,24 +6,24 @@ metadata:
   annotations:
     ingress.kubernetes.io/force-ssl-redirect: "false"
     ingress.kubernetes.io/ssl-redirect: "false"
-    ingress.kubernetes.io/ssl-ciphers: {{ .Values.wordpress.ingress.sslCipher | quote }}
+    ingress.kubernetes.io/ssl-ciphers: {{ .Values.static.nginx.ingress.sslCipher | quote }}
     ingress.kubernetes.io/backend-protocol: "HTTP"
     kubernetes.io/ingress.class: "nginx-external"
-    {{- with .Values.wordpress.ingress.whitelistSourceRange }}
+    {{- with .Values.static.nginx.ingress.whitelistSourceRange }}
     ingress.kubernetes.io/whitelist-source-range: {{ . | nindent 6 }}
     {{- end }}
 spec:
   tls:
     - hosts:
         - {{ .Values.siteUrl }}
-      secretName: {{ .Values.wordpress.secretName }}
+      secretName: {{ .Values.static.nginx.secretName }}
   rules:
     - host: {{ .Values.siteUrl }}
       http:
         paths:
           - backend:
               service:
-                name: {{ .Values.name }}
+                name: {{ .Values.name }}-nginx
                 port:
                   number: 8080
             path: /

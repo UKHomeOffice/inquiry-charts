@@ -1,3 +1,4 @@
+{{- if ne .Values.static.enabled true }}
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
@@ -16,3 +17,4 @@ spec:
     group: cert-manager.io
   dnsNames:
     {{- toYaml .Values.wordpress.certificate.dnsNames | nindent 4 }}
+{{- end }}

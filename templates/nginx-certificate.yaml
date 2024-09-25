@@ -1,0 +1,20 @@
+{{- if .Values.static.enabled }}
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  {{- if .Values.prod }}
+  name: {{ .Values.name }}-prod
+  {{- else }}
+  name: {{ .Values.name }}
+  {{- end }}
+  labels:
+    cert-manager.io/solver: http01
+spec:
+  secretName: {{ required "provide a secret name for nginx cert" .Values.static.nginx.secretName }}
+  issuerRef:
+    name: {{ .Values.static.nginx.certificate.issuerName | default "letsencrypt-prod" }}
+    kind: ClusterIssuer
+    group: cert-manager.io
+  dnsNames:
+    {{- toYaml .Values.static.nginx.certificate.dnsNames | nindent 4 }}
+{{- end }}

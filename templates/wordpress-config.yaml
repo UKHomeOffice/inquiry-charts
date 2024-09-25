@@ -1,3 +1,4 @@
+{{- if ne .Values.static.enabled true }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -8,3 +9,4 @@ data:
   ADMIN_SITE_URL: https://{{ .Values.adminSiteUrl }}
   SITE_TITLE: "{{ .Values.shortName | upper }}"
   ADMIN_DEPLOYMENT: "no"
+{{- end }}

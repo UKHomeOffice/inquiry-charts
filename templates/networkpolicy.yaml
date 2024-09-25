@@ -17,6 +17,10 @@ spec:
       ports:
         - protocol: TCP
           port: 8081
+        {{- if .Values.static.enabled }}
+        - protocol: TCP
+          port: 8080
+        {{- end }}
   egress:
     - ports:
         - port: 53

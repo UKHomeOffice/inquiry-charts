@@ -6,16 +6,16 @@ platform:
   arch: amd64
 
 steps:
-  - name: update-chart-version
-    image: alpine
-    commands:
-      - |
-        sed -i "s/^version:.*/version: ${DRONE_TAG}/" Chart.yaml
-        sed -i "s/^appVersion:.*/appVersion: ${DRONE_TAG}/" Chart.yaml
-      - cat Chart.yaml
-    when:
-      event:
-        - tag
+#  - name: update-chart-version
+#    image: alpine
+#    commands:
+#      - |
+#        sed -i "s/^version:.*/version: ${DRONE_TAG}/" Chart.yaml
+#        sed -i "s/^appVersion:.*/appVersion: ${DRONE_TAG}/" Chart.yaml
+#      - cat Chart.yaml
+#    when:
+#      event:
+#        - tag
   - name: package-helm
     image: alpine/helm:3.16
     commands:
@@ -31,36 +31,38 @@ steps:
     when:
       event:
         - tag
-  - name: git-push
-    image: appleboy/drone-git-push
-    settings:
-      branch: main
-      remote: https://${GITHUB_USERNAME}:${GITHUB_TOKEN}@github.com/UKHomeOffice/inquiry-charts.git
-      commit: true
-      commit_message: "Update Helm chart version to ${DRONE_TAG} and update index.yaml"
-      author_name: "drone-ci"
-      author_email: "drone-ci@no-reply.com"
-    environment:
-      GITHUB_USERNAME:
-        from_secret: github_username
-      GITHUB_TOKEN:
-        from_secret: github_token
-    when:
-      event:
-        - tag
+#  - name: git-push
+#    image: appleboy/drone-git-push
+#    settings:
+#      branch: main
+#      remote: https://${GITHUB_USERNAME}:${GITHUB_TOKEN}@github.com/UKHomeOffice/inquiry-charts.git
+#      commit: true
+#      commit_message: "Update Helm chart version to ${DRONE_TAG} and update index.yaml"
+#      author_name: "drone-ci"
+#      author_email: "drone-ci@no-reply.com"
+#    environment:
+#      GITHUB_USERNAME:
+#        from_secret: github_username
+#      GITHUB_TOKEN:
+#        from_secret: github_token
+#    when:
+#      event:
+#        - tag
   - name: attach-release
     image: plugins/github-release
     settings:
       api_key:
         from_secret: github_token
-      files: "*.tgz"
+      files:
+       - "*.tgz"
+       - index.yaml
     when:
       event:
         - tag
   - name: cleanup
     image: alpine
     commands:
-      - rm -rf *.tgz
+      - rm -rf *.tgz index.yaml
 trigger:
   event:
     - tag
