@@ -34,15 +34,15 @@ steps:
     image: appleboy/drone-git-push
     settings:
       branch: main
-      remote: https://github.com/UKHomeOffice/inquiry-charts.git
-      force: false
+      remote: https://${GITHUB_USERNAME}:${GITHUB_TOKEN}@github.com/UKHomeOffice/inquiry-charts.git
       commit: true
       commit_message: "Update Helm chart version to ${DRONE_TAG} and update index.yaml"
       author_name: "drone-ci"
       author_email: "drone-ci@no-reply.com"
-      username:
+    environment:
+      GITHUB_USERNAME:
         from_secret: github_username
-      password:
+      GITHUB_TOKEN:
         from_secret: github_token
     when:
       event:
