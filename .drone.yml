@@ -4,12 +4,14 @@ name: package-helm-chart
 platform:
   os: linux
   arch: amd64
+
 environment:
   GITHUB_USERNAME:
     from_secret: github_username
   GITHUB_TOKEN:
     from_secret: github_token
-  REMOTE_URL: "https://${GITHUB_USERNAME}:${GITHUB_TOKEN}@github.com/UKHomeOffice/inquiry-charts.git"
+  REMOTE_URL: https://${GITHUB_USERNAME}:${GITHUB_TOKEN}@github.com/UKHomeOffice/inquiry-charts.git
+
 steps:
   - name: update-chart-version
     image: alpine
