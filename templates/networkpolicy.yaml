@@ -5,7 +5,11 @@ metadata:
 spec:
   podSelector:
     matchLabels:
+      {{- if .Values.static.enabled }}
       role: wordpress
+      {{- else }}
+      name: {{ .Values.name }}-nginx
+      {{- end }}
   policyTypes:
     - Ingress
     - Egress
