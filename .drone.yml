@@ -42,10 +42,11 @@ steps:
     commands:
       - git config user.name "drone-ci"
       - git config user.email "drone-ci@no-reply.com"
-      - git remote set-url origin "https://${GITHUB_TOKEN}@github.com/UKHomeOffice/inquiry-charts.git"
+      - git fetch origin main
+      - git checkout main
       - git add Chart.yaml index.yaml
       - git commit -m "Update Helm chart version to ${DRONE_TAG} and update index.yaml"
-      - git push origin HEAD
+      - git push "https://${GITHUB_TOKEN}@github.com/UKHomeOffice/inquiry-charts.git" main
     when:
       event:
         - tag
