@@ -30,22 +30,11 @@ steps:
     when:
       event:
         - tag
-  - name: debug
-    image: alpine
-    commands:
-      -  |
-          env | grep GITHUB
-    environment:
-      GITHUB_USERNAME:
-        from_secret: github_username
-    when:
-      event:
-        - tag
   - name: git-push
     image: appleboy/drone-git-push
     settings:
       branch: main
-      remote: https://$${GITHUB_USERNAME}:$${GITHUB_TOKEN}@github.com/UKHomeOffice/inquiry-charts.git
+      remote: "https://${GITHUB_USERNAME}:${GITHUB_TOKEN}@github.com/UKHomeOffice/inquiry-charts.git"
       commit: true
       commit_message: "Update Helm chart version to ${DRONE_TAG} and update index.yaml"
       author_name: "drone-ci"
