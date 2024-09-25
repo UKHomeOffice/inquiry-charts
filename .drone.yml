@@ -34,7 +34,7 @@ steps:
     image: alpine
     commands:
       -  |
-         echo "Username: ${GITHUB_USERNAME}"
+          env | grep GITHUB
     environment:
       GITHUB_USERNAME:
         from_secret: github_username
