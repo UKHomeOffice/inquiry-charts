@@ -5,12 +5,6 @@ platform:
   os: linux
   arch: amd64
 
-environment:
-  GITHUB_USERNAME:
-    from_secret: github_username
-  GITHUB_TOKEN:
-    from_secret: github_token
-
 steps:
   - name: update-chart-version
     image: alpine
@@ -46,13 +40,19 @@ steps:
       commit_message: "Update Helm chart version to ${DRONE_TAG} and update index.yaml"
       author_name: "drone-ci"
       author_email: "drone-ci@no-reply.com"
+    environment:
+      GITHUB_USERNAME:
+        from_secret: github_username
+      GITHUB_TOKEN:
+        from_secret: github_token
     when:
       event:
         - tag
   - name: attach-release
     image: plugins/github-release
     settings:
-      api_key: ${GITHUB_TOKEN}
+      api_key:
+        from_secret: github_token
       files: "*.tgz"
     when:
       event:
