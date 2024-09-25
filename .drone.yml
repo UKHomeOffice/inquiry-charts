@@ -30,16 +30,6 @@ steps:
     when:
       event:
         - tag
-  - name: commit the changes
-    image: alpine
-    commands:
-      - git checkout -b "update-chart-${DRONE_TAG}"
-      - git add Chart.yaml index.yaml
-      - git commit -m "Update Helm chart version to ${DRONE_TAG}"
-      - echo "Changes committed to the new branch"
-    when:
-      event:
-        - tag
   - name: push-branch
     image: alpine/git
     environment:
@@ -48,6 +38,10 @@ steps:
     commands:
       - git config user.name "drone-ci"
       - git config user.email "drone-ci@no-reply.com"
+      - git checkout -b "update-chart-${DRONE_TAG}"
+      - git add Chart.yaml index.yaml
+      - git commit -m "Update Helm chart version to ${DRONE_TAG}"
+      - echo "Changes committed to the new branch"
       - git push "https://${GITHUB_TOKEN}@github.com/UKHomeOffice/inquiry-charts.git" "update-chart-${DRONE_TAG}"
     when:
       event:
