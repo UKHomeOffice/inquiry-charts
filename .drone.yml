@@ -33,7 +33,8 @@ steps:
   - name: debug
     image: alpine
     commands:
-      - sh -c 'echo "Username: ${GITHUB_USERNAME}"'
+      -  |
+         echo "Username: ${GITHUB_USERNAME}"
     environment:
       GITHUB_USERNAME:
         from_secret: github_username
