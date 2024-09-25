@@ -31,7 +31,7 @@ steps:
     when:
       event:
         - tag
-  - name: update-chart-version
+  - name: commit the changes
     image: alpine
     commands:
       - git add Chart.yaml index.yaml
