@@ -46,7 +46,7 @@ steps:
       - git checkout main
       - git add Chart.yaml index.yaml
       - git commit -m "Update Helm chart version to ${DRONE_TAG} and update index.yaml"
-      - git push "https://${GITHUB_TOKEN}@github.com/UKHomeOffice/inquiry-charts.git" main
+      - git push "https://${GITHUB_TOKEN}:x-oauth-basic@github.com/UKHomeOffice/inquiry-charts.git" main
     when:
       event:
         - tag
