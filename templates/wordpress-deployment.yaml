@@ -17,7 +17,7 @@ spec:
   template:
     metadata:
       labels:
-        role: wordpress
+        app: {{ .Values.name }}
         {{- include "selectorLabels" . | nindent 8 }}
     spec:
       securityContext:
