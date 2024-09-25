@@ -4,6 +4,12 @@ name: package-helm-chart
 platform:
   os: linux
   arch: amd64
+environment:
+  GITHUB_USERNAME:
+    from_secret: github_username
+  GITHUB_TOKEN:
+    from_secret: github_token
+  REMOTE_URL: "https://${GITHUB_USERNAME}:${GITHUB_TOKEN}@github.com/UKHomeOffice/inquiry-charts.git"
 steps:
   - name: update-chart-version
     image: alpine
@@ -34,16 +40,11 @@ steps:
     image: appleboy/drone-git-push
     settings:
       branch: main
-      remote: "https://${GITHUB_USERNAME}:${GITHUB_TOKEN}@github.com/UKHomeOffice/inquiry-charts.git"
+      remote: "${REMOTE_URL}"
       commit: true
       commit_message: "Update Helm chart version to ${DRONE_TAG} and update index.yaml"
       author_name: "drone-ci"
       author_email: "drone-ci@no-reply.com"
-    environment:
-      GITHUB_USERNAME:
-        from_secret: github_username
-      GITHUB_TOKEN:
-        from_secret: github_token
     when:
       event:
         - tag
