@@ -5,10 +5,10 @@ platform:
   os: linux
   arch: amd64
 steps:
-  # Step 1: Update the chart version in Chart.yaml from the tag
   - name: update-chart-version
     image: alpine
     commands:
+      - git checkout -b "update-chart-${DRONE_TAG}"
       - |
         sed -i "s/^version:.*/version: ${DRONE_TAG}/" Chart.yaml
         sed -i "s/^appVersion:.*/appVersion: ${DRONE_TAG}/" Chart.yaml
@@ -16,7 +16,6 @@ steps:
     when:
       event:
         - tag
-  # Step 2: Package the Helm chart
   - name: package-helm
     image: alpine/helm:3.16
     commands:
@@ -24,7 +23,6 @@ steps:
     when:
       event:
         - tag
-  # Step 3: Update index.yaml with the new chart
   - name: update-index
     image: alpine/helm:3.16
     commands:
@@ -33,8 +31,16 @@ steps:
     when:
       event:
         - tag
-  # Step 4: Commit and push changes (Chart.yaml and index.yaml)
-  - name: commit-changes
+  - name: update-chart-version
+    image: alpine
+    commands:
+      - git add Chart.yaml index.yaml
+      - git commit -m "Update Helm chart version to ${DRONE_TAG}"
+      - echo "Changes committed to the new branch"
+    when:
+      event:
+        - tag
+  - name: push-branch
     image: alpine/git
     environment:
       GITHUB_TOKEN:
@@ -42,15 +48,23 @@ steps:
     commands:
       - git config user.name "drone-ci"
       - git config user.email "drone-ci@no-reply.com"
-      - git fetch origin main
-      - git checkout main
-      - git add Chart.yaml index.yaml
-      - git commit -m "Update Helm chart version to ${DRONE_TAG} and update index.yaml"
-      - git push "https://${GITHUB_TOKEN}:x-oauth-basic@github.com/UKHomeOffice/inquiry-charts.git" main
+      - git push "https://${GITHUB_TOKEN}@github.com/UKHomeOffice/inquiry-charts.git" "update-chart-${DRONE_TAG}"
     when:
       event:
         - tag
-  # Step 5: Attach the packaged Helm chart to the GitHub release
+  - name: create-pull-request
+    image: curlimages/curl:7.73.0
+    environment:
+      GITHUB_TOKEN:
+        from_secret: github_token
+    commands:
+      - >
+        curl -X POST -H "Authorization: token ${GITHUB_TOKEN}" \
+        -d '{"title":"Update Helm chart version to '${DRONE_TAG}'", "head":"update-chart-'${DRONE_TAG}'", "base":"main"}' \
+        https://api.github.com/repos/UKHomeOffice/inquiry-charts/pulls
+    when:
+      event:
+        - tag
   - name: attach-release
     image: plugins/github-release
     settings:
@@ -60,7 +74,6 @@ steps:
     when:
       event:
         - tag
-  # Step 6: Clean up
   - name: cleanup
     image: alpine
     commands:
