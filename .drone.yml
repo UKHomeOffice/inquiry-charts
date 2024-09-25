@@ -5,6 +5,16 @@ platform:
   os: linux
   arch: amd64
 steps:
+  - name: update-chart-version
+    image: alpine
+    commands:
+      - |
+        sed -i "s/^version:.*/version: ${DRONE_TAG}/" Chart.yaml
+        sed -i "s/^appVersion:.*/appVersion: ${DRONE_TAG}/" Chart.yaml
+      - cat Chart.yaml
+    when:
+      event:
+        - tag
   - name: package-helm
     image: alpine/helm:3.16
     commands:
@@ -20,17 +30,20 @@ steps:
     when:
       event:
         - tag
-  - name: create-pull-request
-    image: alpine/git
-    environment:
-      GITHUB_TOKEN:
+  - name: git-push
+    image: appleboy/drone-git-push
+    settings:
+      branch: main
+      remote: https://github.com/UKHomeOffice/inquiry-charts.git
+      force: false
+      commit: true
+      commit_message: "Update Helm chart version to ${DRONE_TAG} and update index.yaml"
+      author_name: "drone-ci"
+      author_email: "drone-ci@no-reply.com"
+      username:
+        from_secret: github_username
+      password:
         from_secret: github_token
-    commands:
-      - git config user.name "drone-ci"
-      - git config user.email "drone-ci@no-reply.com"
-      - apk add --no-cache curl jq
-      - chmod +x create_pr.sh
-      - create_pr.sh "$GITHUB_TOKEN"
     when:
       event:
         - tag
