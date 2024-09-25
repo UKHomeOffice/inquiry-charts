@@ -37,6 +37,9 @@ steps:
     environment:
       GITHUB_USERNAME:
         from_secret: github_username
+    when:
+      event:
+        - tag
   - name: git-push
     image: appleboy/drone-git-push
     settings:
