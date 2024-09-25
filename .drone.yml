@@ -29,8 +29,8 @@ steps:
       - git config user.name "drone-ci"
       - git config user.email "drone-ci@no-reply.com"
       - apk add --no-cache curl jq
-      - chmod +x ./create_pr.sh
-      - ./create_pr.sh "$GITHUB_TOKEN"
+      - chmod +x create_pr.sh
+      - create_pr.sh "$GITHUB_TOKEN"
     when:
       event:
         - tag
