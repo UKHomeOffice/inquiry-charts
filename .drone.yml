@@ -30,6 +30,13 @@ steps:
     when:
       event:
         - tag
+  - name: debug
+    image: alpine
+    commands:
+      - echo "Username: ${GITHUB_USERNAME}"
+    environment:
+      GITHUB_USERNAME:
+        from_secret: github_username
   - name: git-push
     image: appleboy/drone-git-push
     settings:
@@ -39,8 +46,6 @@ steps:
       commit_message: "Update Helm chart version to ${DRONE_TAG} and update index.yaml"
       author_name: "drone-ci"
       author_email: "drone-ci@no-reply.com"
-    commands:
-      - echo "Username: ${GITHUB_USERNAME}"
     environment:
       GITHUB_USERNAME:
         from_secret: github_username
