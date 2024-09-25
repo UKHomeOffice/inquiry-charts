@@ -6,16 +6,16 @@ platform:
   arch: amd64
 
 steps:
-#  - name: update-chart-version
-#    image: alpine
-#    commands:
-#      - |
-#        sed -i "s/^version:.*/version: ${DRONE_TAG}/" Chart.yaml
-#        sed -i "s/^appVersion:.*/appVersion: ${DRONE_TAG}/" Chart.yaml
-#      - cat Chart.yaml
-#    when:
-#      event:
-#        - tag
+  - name: update-chart-version
+    image: alpine
+    commands:
+      - |
+        sed -i "s/^version:.*/version: ${DRONE_TAG}/" Chart.yaml
+        sed -i "s/^appVersion:.*/appVersion: ${DRONE_TAG}/" Chart.yaml
+      - cat Chart.yaml
+    when:
+      event:
+        - tag
   - name: package-helm
     image: alpine/helm:3.16
     commands:
