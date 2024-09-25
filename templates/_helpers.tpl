@@ -2,7 +2,11 @@
 Selector labels
 */}}
 {{- define "selectorLabels" -}}
+{{- if .Values.static.enabled -}}
+name: {{ .Values.name }}-nginx
+{{- else -}}
 name: {{ .Values.name }}
+{{- end -}}
 {{- end }}
 
 {{/*
