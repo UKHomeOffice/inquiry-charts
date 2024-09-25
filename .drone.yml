@@ -20,12 +20,6 @@ steps:
     image: alpine/helm:3.16
     commands:
       - helm package .
-    when:
-      event:
-        - tag
-  - name: update-index
-    image: alpine/helm:3.16
-    commands:
       - helm repo index . --url https://github.com/UKHomeOffice/inquiry-charts/releases/download/$${DRONE_TAG}/
       - cat index.yaml
     when:
