@@ -17,6 +17,7 @@ spec:
   template:
     metadata:
       labels:
+        role: nginx
         app: {{ .Values.name }}
         {{- include "selectorLabels" . | nindent 8 }}
     spec:

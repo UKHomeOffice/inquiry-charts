@@ -8,7 +8,7 @@ spec:
       {{- if .Values.static.enabled }}
       role: wordpress
       {{- else }}
-      name: {{ .Values.name }}-nginx
+      role: nginx
       {{- end }}
   policyTypes:
     - Ingress
