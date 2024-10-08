@@ -7,29 +7,38 @@ spec:
     matchLabels:
       app: {{ .Values.name }}
   policyTypes:
-    - Ingress
-    - Egress
+  {{- range .Values.networkPolicy.policyTypes }}
+    - {{ . }}
+  {{- end }}
+
+  {{- if (has "Ingress" .Values.networkPolicy.policyTypes) }}
   ingress:
+    {{- range .Values.networkPolicy.ingress }}
     - from:
-        - namespaceSelector:
-            matchLabels:
-              name: ingress-external
-      ports:
-        - protocol: TCP
-          port: 8081
-        {{- if .Values.static.enabled }}
-        - protocol: TCP
-          port: 8080
+        {{- range .from }}
+        namespaceSelector:
+          matchLabels:
+            name: {{ .namespaceSelector.matchLabels.name }}
         {{- end }}
+      ports:
+        {{- range .ports }}
+        - protocol: {{ .protocol }}
+          port: {{ .port }}
+        {{- end }}
+    {{- end }}
+  {{- end }}
+
+  {{- if (has "Egress" .Values.networkPolicy.policyTypes) }}
   egress:
-    - ports:
-        - port: 53
-          protocol: UDP
-        - port: 53
-          protocol: TCP
-        - port: 3306
-          protocol: TCP
-        - port: 443
-          protocol: TCP
+    {{- range .Values.networkPolicy.egress }}
     - to:
-        - namespaceSelector: {}
+        {{- range .to }}
+        namespaceSelector: {{ .namespaceSelector | default "{}" }}
+        {{- end }}
+      ports:
+        {{- range .ports }}
+        - protocol: {{ .protocol }}
+          port: {{ .port }}
+        {{- end }}
+    {{- end }}
+  {{- end }}

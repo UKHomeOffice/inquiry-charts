@@ -196,3 +196,18 @@ static:
       issuerName: 'letsencrypt-prod'
       # -- DNS names for certificate
       dnsNames: [ ]
+
+networkPolicy:
+  policyTypes: []
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              name: ingress-external
+      ports: []
+  egress:
+    - ports:
+        - port: 53
+          protocol: UDP
+    - to:
+        - namespaceSelector: {}
