@@ -15,10 +15,12 @@ spec:
   ingress:
     {{- range .Values.networkPolicy.ingress }}
     - from:
-        {{- range .from }}
-        namespaceSelector:
-          matchLabels:
-            name: {{ .namespaceSelector.matchLabels.name }}
+        {{- if .from }}
+          {{- range .from }}
+        - namespaceSelector:
+            matchLabels:
+              name: {{ .namespaceSelector.matchLabels.name }}
+          {{- end }}
         {{- end }}
       ports:
         {{- range .ports }}
@@ -30,15 +32,17 @@ spec:
 
   {{- if (has "Egress" .Values.networkPolicy.policyTypes) }}
   egress:
-    {{- range .Values.networkPolicy.egress }}
+      {{- range .Values.networkPolicy.egress }}
     - to:
-        {{- range .to }}
-        namespaceSelector: {{ .namespaceSelector | default "{}" }}
-        {{- end }}
+          {{- if .to }}
+            {{- range .to }}
+        - namespaceSelector: {{ .namespaceSelector | default "{}" }}
+            {{- end }}
+          {{- end }}
       ports:
-        {{- range .ports }}
+          {{- range .ports }}
         - protocol: {{ .protocol }}
           port: {{ .port }}
-        {{- end }}
+          {{- end }}
+      {{- end }}
     {{- end }}
-  {{- end }}
