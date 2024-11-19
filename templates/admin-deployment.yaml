@@ -47,11 +47,6 @@ spec:
             {{- toYaml .Values.admin.resources | nindent 12 }}
           ports:
             - containerPort: 8081
-          {{- if .Values.static.enabled }}
-          volumeMounts:
-            - name: static-sync
-              mountPath: "/tmp/static"
-          {{- end }}
           envFrom:
             - configMapRef:
                 name: {{ .Values.name }}-config-admin
@@ -69,12 +64,6 @@ spec:
               value: {{ .value | quote }}
               {{- end }}
             {{- end }}
-      {{- if .Values.static.enabled }}
-      volumes:
-        - name: static-sync
-          persistentVolumeClaim:
-            claimName: {{ .Values.name }}-syncstatic-data-claim
-      {{- end }}
       {{- with .Values.admin.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
