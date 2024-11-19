@@ -2,19 +2,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mysql-client
+  name: blackbox
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: mysql-client
+      app: blackbox
   template:
     metadata:
       labels:
-        app: mysql-client
+        app: blackbox
     spec:
       containers:
-        - name: mysql-client
+        - name: blackbox
           image: quay.io/ukhomeofficedigital/inquiry-tools:latest
           command: ["sleep"]
           args: ["infinity"] # Keeps the pod running
