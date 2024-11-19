@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: mysql-client
-          image: mysql:latest
+          image: quay.io/ukhomeofficedigital/inquiry-tools:latest
           command: ["sleep"]
           args: ["infinity"] # Keeps the pod running
           resources:
