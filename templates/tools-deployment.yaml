@@ -1,0 +1,28 @@
+{{- if .Values.tools.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blackbox
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: blackbox
+  template:
+    metadata:
+      labels:
+        app: blackbox
+    spec:
+      containers:
+        - name: blackbox
+          image: quay.io/ukhomeofficedigital/inquiry-tools:latest
+          command: ["sleep"]
+          args: ["infinity"] # Keeps the pod running
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
+{{- end }}
