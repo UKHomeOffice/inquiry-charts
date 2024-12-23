@@ -11,7 +11,7 @@ metadata:
 spec:
   storageClassName: {{ .Values.static.pvc.syncstatic.storageClassName }}
   accessModes:
-    - ReadWriteOnce
+    - {{ .Values.static.pvc.syncstatic.accessModes }}
   resources:
     requests:
       storage: {{ .Values.static.pvc.syncstatic.storage }}

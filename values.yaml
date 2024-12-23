@@ -136,9 +136,11 @@ static:
     staticfiles:
       storageClassName: ''
       storage: 5Gi
+      accessModes: ''
     syncstatic:
       storageClassName: ''
       storage: 5Gi
+      accessModes: ''
     labels: { }
   cronjob:
     # -- CronJob Schedule

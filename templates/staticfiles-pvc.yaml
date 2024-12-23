@@ -11,7 +11,7 @@ metadata:
 spec:
   storageClassName: {{ .Values.static.pvc.staticfiles.storageClassName }}
   accessModes:
-    - ReadWriteOnce
+    - {{ .Values.static.pvc.staticfiles.accessModes }}
   resources:
     requests:
       storage: {{ .Values.static.pvc.staticfiles.storage }}
